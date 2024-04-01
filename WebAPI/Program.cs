@@ -1,6 +1,7 @@
 using Business.Abstract;
 using Business.Concrete;
 using Core.CrossCuttingConcers.Exceptions.Extensions;
+using Core.CrossCuttingConcers.ExceptionsV2;
 using DataAccess.Abstract;
 using DataAccess.Concrete;
 using DataAccess.Contexts;
@@ -35,7 +36,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.ConfigureCustomExceptionMiddleware();
-
+//app.UseMiddleware<ExceptionMiddlewareV2>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

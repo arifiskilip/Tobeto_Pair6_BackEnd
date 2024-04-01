@@ -5,14 +5,12 @@ namespace Core.CrossCuttingConcers.Exceptions
 {
 	public class ExceptionMiddleware
 	{
-		private readonly IHttpContextAccessor _contextAccessor;
 		private readonly HttpExceptionHandler _httpExceptionHandler;
 		private readonly RequestDelegate _next;
 
-		public ExceptionMiddleware(RequestDelegate next, IHttpContextAccessor contextAccessor)
+		public ExceptionMiddleware(RequestDelegate next)
 		{
 			_next = next;
-			_contextAccessor = contextAccessor;
 			_httpExceptionHandler = new HttpExceptionHandler();
 		}
 

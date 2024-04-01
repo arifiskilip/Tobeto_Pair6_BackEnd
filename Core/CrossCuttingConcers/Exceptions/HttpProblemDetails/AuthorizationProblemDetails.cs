@@ -7,6 +7,7 @@ namespace Core.CrossCuttingConcers.Exceptions.HttpProblemDetails
 	{
 		public AuthorizationProblemDetails(string detail)
 		{
+		 
 			Title = "Authorization error";
 			Detail = detail;
 			Status = StatusCodes.Status401Unauthorized;
