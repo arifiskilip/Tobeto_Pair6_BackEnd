@@ -1,23 +1,15 @@
-using Business.Abstract;
-using Business.Concrete;
 using Core.CrossCuttingConcers.Exceptions.Extensions;
-using Core.CrossCuttingConcers.ExceptionsV2;
-using DataAccess.Abstract;
-using DataAccess.Concrete;
-using DataAccess.Contexts;
-using Microsoft.EntityFrameworkCore;
+using DataAccess;
+using Business;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //IoC
-builder.Services.AddScoped<IProductService, ProductManager>();
-builder.Services.AddScoped<IProductDal, ProductDal>();
+builder.Services.AddDataAccessServices();
+builder.Services.AddBusinessServices();
 
-//Add DbContext
-builder.Services.AddDbContext<TobetoContext>(opt =>
-{
-	opt.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
-});
+
+
 
 // Add services to the container.
 

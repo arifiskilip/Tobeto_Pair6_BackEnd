@@ -1,12 +1,13 @@
-﻿using Entities.Concrete;
+﻿using Business.Dtos.Response;
+using Entities.Concrete;
 
 namespace Business.Abstract;
 
 public interface IProductService
 {
-	Task<List<Product>> GetAllAsync();
-	Task<Product> GetByIdAsync(int id);
-	Task<Product> AddAsync(Product product);
-	Task<Product> UpdateAsync(Product product);
+	Task<List<GetAllProductResponse>> GetAllAsync();
+	Task<GetProductResponse> GetByIdAsync(int id);
+	Task<CreateProductResponse> AddAsync(Product product);
+	Task<UpdateProductResponse> UpdateAsync(Product product);
 	Task DeleteAsync(int id);
 }

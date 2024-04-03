@@ -7,7 +7,7 @@ public class ValidEx : IException
 	public IEnumerable<ValidationExceptionModel> Errors { get; }
 
 	public ValidEx(IEnumerable<ValidationExceptionModel> errors)
-		: base(StatusCodes.Status400BadRequest,"Fluent Valid",BuildErrorMessage(errors))
+		: base(StatusCodes.Status400BadRequest,"Fluent Valid",BuildErrorMessage(errors),"Fluent Valid")
 	{
 		Errors = errors;
 	}

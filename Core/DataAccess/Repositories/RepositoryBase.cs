@@ -1,7 +1,9 @@
 ﻿using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using System.Drawing;
 using System.Linq.Expressions;
+using System.Threading;
 
 namespace Core.DataAccess.Repositories;
 
@@ -34,7 +36,11 @@ public class RepositoryBase<TEntity, TId, TContext>
 
 	public IList<TEntity> AddRange(IList<TEntity> entities)
 	{
-		throw new NotImplementedException();
+		foreach (TEntity entity in entities)
+			entity.CreatedDate = DateTime.UtcNow;
+		 _context.AddRangeAsync(entities);
+		 _context.SaveChangesAsync();
+		return entities;
 	}
 
 	public Task<ICollection<TEntity>> AddRangeAsync(ICollection<TEntity> entities)
@@ -89,7 +95,18 @@ public class RepositoryBase<TEntity, TId, TContext>
 
 	public IQueryable<TEntity> GetList(Expression<Func<TEntity, bool>>? predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null, bool withDeleted = false, bool enableTracking = true)
 	{
-		throw new NotImplementedException();
+		IQueryable<TEntity> queryable = Query();
+		if (!enableTracking)
+			queryable = queryable.AsNoTracking();
+		if (include != null)
+			queryable = include(queryable);
+		if (withDeleted)
+			queryable = queryable.IgnoreQueryFilters();
+		if (predicate != null)
+			queryable = queryable.Where(predicate);
+		if (orderBy != null)
+			return orderBy(queryable);
+		return queryable;
 	}
 
 	public Task<IQueryable<TEntity>> GetListAsync(Expression<Func<TEntity, bool>>? predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null, int index = 0, int size = 10, bool withDeleted = false, bool enableTracking = true, CancellationToken cancellationToken = default)
@@ -97,10 +114,8 @@ public class RepositoryBase<TEntity, TId, TContext>
 		throw new NotImplementedException();
 	}
 
-	public IQueryable<TEntity> Query()
-	{
-		throw new NotImplementedException();
-	}
+	public IQueryable<TEntity> Query() => _entity;
+
 
 	public TEntity Update(TEntity entity)
 	{

@@ -1,10 +1,6 @@
 ﻿using Business.Abstract;
-using Core.CrossCuttingConcers.Exceptions.Types;
-using Core.CrossCuttingConcers.ExceptionsV2.Type;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Mvc;
-using ValidationException = Core.CrossCuttingConcers.Exceptions.Types.ValidationException;
-using ValidationExceptionModel = Core.CrossCuttingConcers.Exceptions.Types.ValidationExceptionModel;
 
 namespace WebAPI.Controllers
 {
@@ -22,18 +18,14 @@ namespace WebAPI.Controllers
 		[HttpPost]
 		public async Task<IActionResult> AddAsync([FromBody] Product product)
 		{
-			if (product.Name=="a")
-			{
-				throw new NatFounEx("Bulunamadı!");
-			}
-			else if(product.Name=="b"){
-				throw new ValidationEx("Validasyon hata2");
-			}
-			else if(product.Name == "c")
-			{
-				throw new ValidationException(new List<ValidationExceptionModel>() { new ValidationExceptionModel() { Errors = new List<string> { "test1", "test2" }, Property = "Deneme Property" } });
-			}
 			var result = await _productService.AddAsync(product);
+			return Ok(result);
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> GetAll()
+		{
+			var result = await _productService.GetAllAsync();
 			return Ok(result);
 		}
 	}

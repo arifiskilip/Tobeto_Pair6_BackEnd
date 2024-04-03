@@ -35,7 +35,7 @@ public class ExceptionMiddlewareV2
 			Detail = exception.Detail,
 			StatusCode = exception.StatusCode,
 			Title = exception.Title,
-			Type = exception.GetType().Name
+			Type = exception.Type,
 		}));
 	}
 }
