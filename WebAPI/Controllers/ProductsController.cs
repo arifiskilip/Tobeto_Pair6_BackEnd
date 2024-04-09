@@ -1,31 +1,24 @@
-﻿using Business.Abstract;
-using Entities.Concrete;
+﻿using Business.Features.Products.Queries.GetList;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/[controller]/[action]")]
 	[ApiController]
 	public class ProductsController : ControllerBase
 	{
-		private readonly IProductService _productService;
+		private readonly IMediator _mediator;
 
-		public ProductsController(IProductService productService)
+		public ProductsController(IMediator mediator)
 		{
-			_productService = productService;
-		}
-
-		[HttpPost]
-		public async Task<IActionResult> AddAsync([FromBody] Product product)
-		{
-			var result = await _productService.AddAsync(product);
-			return Ok(result);
+			_mediator = mediator;
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetAll()
+		public async Task<IActionResult> GetAll([FromQuery]GetListProductQuery query)
 		{
-			var result = await _productService.GetAllAsync();
+			var result = await _mediator.Send(query);
 			return Ok(result);
 		}
 	}

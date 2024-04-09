@@ -15,8 +15,9 @@ public class Product : Entity<int>
         
     }
 
-	public Product(string name, double unitPrice, int stock, int categoryId)
+	public Product(int id,string name, double unitPrice, int stock, int categoryId)
 	{
+        Id = id;
 		Name = name;
 		UnitPrice = unitPrice;
 		Stock = stock;

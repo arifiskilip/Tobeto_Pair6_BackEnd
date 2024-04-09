@@ -12,8 +12,9 @@ namespace Entities.Concrete
         {
             
         }
-		public Category(string name)
+		public Category(int id,string name)
 		{
+			Id = id;
 			Name = name;
 		}
 	}

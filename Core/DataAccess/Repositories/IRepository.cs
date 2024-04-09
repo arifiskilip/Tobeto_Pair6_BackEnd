@@ -9,7 +9,6 @@ namespace Core.DataAccess.Repositories
 		TEntity? Get(
 		Expression<Func<TEntity, bool>> predicate,
 		Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
-		bool withDeleted = false,
 		bool enableTracking = true
 	);
 
@@ -17,16 +16,15 @@ namespace Core.DataAccess.Repositories
 			Expression<Func<TEntity, bool>>? predicate = null,
 			Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
 			Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
-			bool withDeleted = false,
 			bool enableTracking = true
 		);
 
-		bool Any(Expression<Func<TEntity, bool>>? predicate = null, bool enableTracking = true);
+		bool Any(Expression<Func<TEntity, bool>> predicate);
 		TEntity Add(TEntity entity);
 		IList<TEntity> AddRange(IList<TEntity> entities);
 		TEntity Update(TEntity entity);
 		IList<TEntity> UpdateRange(IList<TEntity> entities);
 		TEntity Delete(TEntity entity);
-		IList<TEntity> DeleteRange(IList<TEntity> entity);
+		IList<TEntity> DeleteRange(IList<TEntity> entities);
 	}
 }

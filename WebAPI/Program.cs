@@ -1,19 +1,19 @@
-using Core.CrossCuttingConcers.Exceptions.Extensions;
-using DataAccess;
 using Business;
+using DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //IoC
-builder.Services.AddDataAccessServices();
 builder.Services.AddBusinessServices();
+builder.Services.AddDataAccessServices();
 
 
 
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(x => 
+ x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -27,7 +27,7 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
-app.ConfigureCustomExceptionMiddleware();
+//app.ConfigureCustomExceptionMiddleware();
 //app.UseMiddleware<ExceptionMiddlewareV2>();
 app.UseHttpsRedirection();
 
