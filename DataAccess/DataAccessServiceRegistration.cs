@@ -14,8 +14,8 @@ namespace DataAccess
 			services.AddDbContext<TobetoContext>(opt =>
 			{
 				opt.UseSqlServer(Connection.GetConnection);
+				opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 			});
-
 			services.AddScoped<IProductDal, ProductDal>();
 			
 			return services;

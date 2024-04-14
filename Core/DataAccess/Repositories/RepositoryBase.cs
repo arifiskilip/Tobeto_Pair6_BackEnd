@@ -13,30 +13,38 @@ public class RepositoryBase<TEntity, TId, TContext>
 {
 	protected DbSet<TEntity> _entity;
 	protected readonly TContext _context;
-    public RepositoryBase(TContext context)
-    {
-	   _context = context;
-       _entity = _context.Set<TEntity>();
-    }
+	public RepositoryBase(TContext context)
+	{
+		_context = context;
+		_entity = _context.Set<TEntity>();
+	}
 
-    public TEntity Add(TEntity entity)
+	public TEntity Add(TEntity entity)
 	{
 		_entity.Add(entity);
 		_context.SaveChanges();
 		return entity;
 	}
 
-	public async Task<TEntity> AddAsync(TEntity entity)
+	public async Task<TEntity> AddAsync(TEntity entity, params Expression<Func<TEntity, object>>[] includeProperties)
 	{
-	    await _entity.AddAsync(entity);
+		await _entity.AddAsync(entity);
+
+		foreach (var includeProperty in includeProperties)
+		{
+			await _context.Entry(entity)
+				.Reference(includeProperty)
+				.LoadAsync();
+		}
+
 		await _context.SaveChangesAsync();
 		return entity;
 	}
 
 	public IList<TEntity> AddRange(IList<TEntity> entities)
 	{
-		 _context.AddRangeAsync(entities);
-		 _context.SaveChangesAsync();
+		_context.AddRangeAsync(entities);
+		_context.SaveChangesAsync();
 		return entities;
 	}
 
@@ -100,7 +108,7 @@ public class RepositoryBase<TEntity, TId, TContext>
 		return queryable.FirstOrDefault(predicate);
 	}
 
-	public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null, bool enableTracking = true, CancellationToken cancellationToken = default)
+	public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null, bool enableTracking = false, CancellationToken cancellationToken = default)
 	{
 		IQueryable<TEntity> queryable = Query();
 		if (!enableTracking)
@@ -159,12 +167,19 @@ public class RepositoryBase<TEntity, TId, TContext>
 		return entity;
 	}
 
-	public async Task<TEntity> UpdateAsync(TEntity entity)
+	public async Task<TEntity> UpdateAsync(TEntity entity, params Expression<Func<TEntity, object>>[] includeProperties)
 	{
 
 		await Task.Run(() =>
 		{
 			_entity.Update(entity);
+
+			foreach (var includeProperty in includeProperties)
+			{
+				_context.Entry(entity)
+				.Reference(includeProperty)
+				.LoadAsync();
+			}
 			_context.SaveChangesAsync();
 		});
 		return entity;

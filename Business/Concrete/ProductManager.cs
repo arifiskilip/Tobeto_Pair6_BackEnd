@@ -16,14 +16,32 @@ public class ProductManager : IProductService
 		_productDal = productDal;
 	}
 
-	public Task<Product> AddAsync(Product product)
+	public async Task<Product> AddAsync(Product product)
 	{
-		throw new NotImplementedException();
+		var checkProduct = await _productDal.GetAsync(
+			predicate: x => x.Id == product.Id);
+		if (checkProduct != null)
+		{
+			throw new Exception("Ürün mevcut değil!");
+		}
+		return await _productDal.AddAsync(
+			entity: product,
+			includeProperties: x => x.Category);
 	}
 
-	public Task DeleteAsync(int id)
+	public async Task DeleteAsync(int id)
 	{
-		throw new NotImplementedException();
+		var checkProduct = await _productDal.GetAsync(
+			predicate: x => x.Id == id,
+			enableTracking:true);
+		if (checkProduct != null)
+		{
+			await _productDal.DeleteAsync(checkProduct);
+		}
+		else
+		{
+			throw new Exception("Ürün mevcut değil!");
+		}
 	}
 
 	public async Task<IPaginatedList<Product>> GetAllAsync(int index=1, int size=10)
@@ -39,13 +57,28 @@ public class ProductManager : IProductService
 
 	}
 
-	public Task<Product> GetByIdAsync(int id)
+	public async Task<Product> GetByIdAsync(int id)
 	{
-		throw new NotImplementedException();
+		var checkProduct = await _productDal.GetAsync(
+			predicate: x => x.Id == id,
+			include: x => x.Include(x => x.Category));
+		if (checkProduct != null)
+		{
+			return checkProduct;
+		}
+		throw new Exception("Ürün mevcut değil!");
 	}
 
-	public Task<Product> UpdateAsync(Product product)
+	public async Task<Product> UpdateAsync(Product product)
 	{
-		throw new NotImplementedException();
+		var checkProduct = await _productDal.GetAsync(
+			predicate: x => x.Id == product.Id);
+		if (checkProduct != null)
+		{
+			return await _productDal.UpdateAsync(
+			entity: product,
+			includeProperties: x => x.Category);
+		}
+		throw new Exception("Ürün mevcut değil!");
 	}
 }

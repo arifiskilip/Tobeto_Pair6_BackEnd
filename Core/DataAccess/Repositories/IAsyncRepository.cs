@@ -20,7 +20,7 @@ namespace Core.DataAccess.Repositories
 			Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
 			int index = 0,
 			int size = 10,
-			bool enableTracking = true,
+			bool enableTracking = false,
 			CancellationToken cancellationToken = default
 		);
 
@@ -29,11 +29,11 @@ namespace Core.DataAccess.Repositories
 		   CancellationToken cancellationToken = default
 	   );
 
-		Task<TEntity> AddAsync(TEntity entity);
+		Task<TEntity> AddAsync(TEntity entity, params Expression<Func<TEntity, object>>[] includeProperties);
 
 		Task<ICollection<TEntity>> AddRangeAsync(ICollection<TEntity> entities);
 
-		Task<TEntity> UpdateAsync(TEntity entity);
+		Task<TEntity> UpdateAsync(TEntity entity, params Expression<Func<TEntity, object>>[] includeProperties);
 
 		Task<ICollection<TEntity>> UpdateRangeAsync(ICollection<TEntity> entities);
 

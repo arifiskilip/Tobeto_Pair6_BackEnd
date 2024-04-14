@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Business.Abstract;
 using Business.Features.Products.Rules;
+using Entities.Concrete;
 using MediatR;
 
 namespace Business.Features.Products.Commands.Create
@@ -27,9 +28,14 @@ namespace Business.Features.Products.Commands.Create
 				_productBusinessRules = productBusinessRules;
 			}
 
-			Task<CreateProductResponse> IRequestHandler<CreateProductCommand, CreateProductResponse>.Handle(CreateProductCommand request, CancellationToken cancellationToken)
+			async Task<CreateProductResponse> IRequestHandler<CreateProductCommand, CreateProductResponse>.Handle(CreateProductCommand request, CancellationToken cancellationToken)
 			{
-				throw new NotImplementedException();
+				//Rules
+				await _productBusinessRules.DuplicateNameCheckAsync(request.Name);
+
+				var addedProduct = await _productService.AddAsync(_mapper.Map<Product>(request));
+
+				return _mapper.Map<CreateProductResponse>(addedProduct); 
 			}
 		}
 	}
