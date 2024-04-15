@@ -1,4 +1,5 @@
 using Business;
+using Core.CrossCuttingConcers.Exceptions.Extensions;
 using DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,7 +7,6 @@ var builder = WebApplication.CreateBuilder(args);
 //IoC
 builder.Services.AddBusinessServices();
 builder.Services.AddDataAccessServices();
-
 
 
 
@@ -28,9 +28,7 @@ if (app.Environment.IsDevelopment())
 	app.UseSwagger();
 	app.UseSwaggerUI();
 }
-
-//app.ConfigureCustomExceptionMiddleware();
-//app.UseMiddleware<ExceptionMiddlewareV2>();
+app.ConfigureCustomExceptionMiddleware();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
