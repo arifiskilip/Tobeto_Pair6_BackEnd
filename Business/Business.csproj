@@ -20,6 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\Auth\Commands\Login\" />
+    <Folder Include="Features\Auth\Rules\" />
     <Folder Include="Features\Products\Constants\" />
   </ItemGroup>
 

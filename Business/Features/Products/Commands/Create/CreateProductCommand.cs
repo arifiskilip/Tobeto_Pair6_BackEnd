@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Business.Abstract;
 using Business.Features.Products.Rules;
-using Business.Features.Products.Validations;
 using Entities.Concrete;
-using FluentValidation;
 using MediatR;
 
 namespace Business.Features.Products.Commands.Create

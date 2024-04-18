@@ -17,6 +17,7 @@ namespace DataAccess
 				opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 			});
 			services.AddScoped<IProductDal, ProductDal>();
+			services.AddScoped<IUserDal, UserDal>();
 			
 			return services;
 		}
