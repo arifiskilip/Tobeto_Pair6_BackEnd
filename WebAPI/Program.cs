@@ -4,6 +4,8 @@ using DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.Get<>();
+
 //IoC
 builder.Services.AddBusinessServices();
 builder.Services.AddDataAccessServices();

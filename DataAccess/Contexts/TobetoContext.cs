@@ -1,4 +1,5 @@
-﻿using Entities.Concrete;
+﻿using Core.Entities;
+using Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -12,6 +13,7 @@ namespace DataAccess.Contexts
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<User> Users { get; set; }
 
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
