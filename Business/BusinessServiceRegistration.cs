@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Concrete;
+using Business.Features.Auth.Rules;
 using Business.Features.Products.Rules;
 using Business.Features.Products.Validations;
 using Core.Application.Pipelines.Validation;
@@ -15,7 +16,12 @@ namespace Business
 		{
 			
 			services.AddScoped<IProductService, ProductManager>();
+			services.AddScoped<IUserService, UserManager>();
+			services.AddScoped<IAuthService, AuthManager>();
+			services.AddScoped<IUserRoleService, UserRoleManager>();
+
 			services.AddScoped(typeof(ProductBusinessRules));
+			services.AddScoped(typeof(AuthBusinessRules));
 			//Autom Mapper
 			services.AddAutoMapper(Assembly.GetExecutingAssembly());
 			//Fluent Validation

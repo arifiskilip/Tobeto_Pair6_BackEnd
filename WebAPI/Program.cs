@@ -1,16 +1,37 @@
 using Business;
+using Core;
 using Core.CrossCuttingConcers.Exceptions.Extensions;
+using Core.Utilities.Security.JWT;
 using DataAccess;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Configuration.Get<>();
 
 //IoC
 builder.Services.AddBusinessServices();
 builder.Services.AddDataAccessServices();
+builder.Services.AddCoreServices();
 
+//Jwt
+//Token Option
+var tokenOptions = builder.Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
+builder.Services
+	.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+	.AddJwtBearer(options =>
+	{
+		options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+		{
+			ValidateIssuer = true,
+			ValidateAudience = true,
+			ValidateLifetime = true,
+			ValidateIssuerSigningKey = true,
+			ValidIssuer = tokenOptions.Issuer,
+			ValidAudience = tokenOptions.Audience,
+			IssuerSigningKey = Core.Utilities.Security.Encryption.SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
+		};
+	});
 
 // Add services to the container.
 
@@ -33,6 +54,7 @@ if (app.Environment.IsDevelopment())
 app.ConfigureCustomExceptionMiddleware();
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

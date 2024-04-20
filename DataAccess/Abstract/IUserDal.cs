@@ -5,5 +5,6 @@ namespace DataAccess.Abstract
 {
 	public interface IUserDal : IRepository<User,int> , IAsyncRepository<User,int>
 	{
+		Task<List<Role>> GetClaimsAsync(User user);
 	}
 }

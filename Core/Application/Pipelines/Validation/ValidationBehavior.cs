@@ -18,21 +18,16 @@ namespace Core.Application.Pipelines.Validation
 
 		public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
 		{
-			var validationResult = _validators.Select(x=> x.Validate(request));
-			if (validationResult.Any())
-			{
-				IEnumerable<ValidationExceptionModel> errors = validationResult
-					.SelectMany(x => x.Errors)
-					.GroupBy(x => x.PropertyName)
-					.Select(group => new ValidationExceptionModel
+			var validationResult = _validators
+				.Select(x => x.Validate(request))
+				.SelectMany(result => result.Errors)
+				.GroupBy(prop => prop.PropertyName)
+				.Select(group => new ValidationExceptionModel
 				{
-					Errors = group.Select(x=>x.ErrorMessage).ToList(),
+					Errors = group.Select(x => x.ErrorMessage).ToList(),
 					Property = group.Key
 				});
-
-				throw new ValidationException(errors);
-			}
-
+			if (validationResult.Count() > 0) throw new ValidationException(validationResult);
 			return await next();
 		}
 	}

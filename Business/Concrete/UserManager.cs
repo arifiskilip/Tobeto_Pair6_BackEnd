@@ -1,22 +1,34 @@
 ﻿using Business.Abstract;
+using Core.CrossCuttingConcers.Exceptions.Types;
+using Core.DataAccess.Paging;
 using Core.Entities;
+using Core.Entities.Enums;
 using DataAccess.Abstract;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace Business.Concrete
 {
 	public class UserManager : IUserService
 	{
 		private readonly IUserDal _userDal;
+		private readonly IUserRoleService _userRoleService;
 
-		public UserManager(IUserDal userDal)
+		public UserManager(IUserDal userDal, IUserRoleService userRoleService)
 		{
 			_userDal = userDal;
+			_userRoleService = userRoleService;
 		}
 
 		public async Task<User> AddAsync(User user)
 		{
 			await _userDal.AddAsync(user);
+			await _userRoleService.AddUserRoleAsync(new()
+			{
+				CreatedDate = DateTime.Now,
+				UserId = user.Id,
+				RoleId = (int)RoleEnum.Member,
+			});
 			return user;
 		}
 
@@ -25,30 +37,42 @@ namespace Business.Concrete
 			await _userDal.DeleteAsync(user);
 		}
 
-		public async Task<List<User>> GetAllAsync()
+		public async Task<IPaginatedList<User>> GetAllAsync()
 		{
 		    var users = await _userDal.GetListAsync();
-			return null;
+			return users;
 		}
 
-		public Task<User> GetByMailAsync(string email)
+		public async Task<User> GetByMailAsync(string email)
 		{
-			throw new NotImplementedException();
+			var checkUser = await _userDal.GetAsync(x => x.Email.ToLower() == email.ToLower());
+			if (checkUser != null)
+			{
+				return checkUser;
+			}
+			throw new NotFoundException("Kullanıcı bulunamadı.");
 		}
 
-		public Task<User> GetByUserIdAsync(int userId)
+		public async Task<User> GetByUserIdAsync(int userId)
 		{
-			throw new NotImplementedException();
+			var checkUser = await _userDal.GetAsync(x => x.Id == userId);
+			if (checkUser != null)
+			{
+				return checkUser;
+			}
+			throw new NotFoundException("Kullanıcı bulunamadı.");
 		}
 
-		public List<Role> GetClaims(User user)
+		public async Task<List<Role>> GetClaimsAsync(User user)
 		{
-			throw new NotImplementedException();
+			var userRoles = await _userDal.GetClaimsAsync(user);
+			return userRoles;
 		}
 
-		public Task<User> UpdateAsync(User user, IFormFile file)
+		public async Task<User> UpdateAsync(User user)
 		{
-			throw new NotImplementedException();
+			var updatedUser = await _userDal.UpdateAsync(user);
+			return updatedUser;
 		}
 	}
 }

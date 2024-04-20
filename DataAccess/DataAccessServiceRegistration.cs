@@ -18,6 +18,8 @@ namespace DataAccess
 			});
 			services.AddScoped<IProductDal, ProductDal>();
 			services.AddScoped<IUserDal, UserDal>();
+			services.AddScoped<IRoleDal, RoleDal>();
+			services.AddScoped<IUserRoleDal, UserRoleDal>();
 			
 			return services;
 		}

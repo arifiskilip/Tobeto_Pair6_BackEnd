@@ -1,4 +1,8 @@
-﻿using DataAccess.Abstract;
+﻿using AutoMapper;
+using Business.Abstract;
+using Business.Features.Auth.Rules;
+using Core.Entities;
+using Core.Utilities.Security.Hashing;
 using MediatR;
 
 namespace Business.Features.Auth.Commands.Register
@@ -15,17 +19,37 @@ namespace Business.Features.Auth.Commands.Register
 		public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterResponse>
 		{
 
-			private readonly IUserDal _userDal;
+			private readonly IMapper _mapper;
+			private readonly IAuthService _authService;
+			private readonly IUserService _userService;
+			private readonly AuthBusinessRules _authBusinessRules;
 
-			public RegisterCommandHandler(IUserDal userDal)
+			public RegisterCommandHandler(IMapper mapper, IAuthService authService, IUserService userService, AuthBusinessRules authBusinessRules)
 			{
-				_userDal = userDal;
+				_mapper = mapper;
+				_authService = authService;
+				_userService = userService;
+				_authBusinessRules = authBusinessRules;
 			}
 
-			public Task<RegisterResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
+			public async Task<RegisterResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
 			{
 				/// Validation 
-				throw new NotImplementedException();
+				/// Business Rules
+				await _authBusinessRules.CheckDuplicateEmailAsync(request.Email);
+
+				byte[] passwordHash, passwordSalt;
+				HashingHelper.CreatePasswordHash(request.Password, out passwordHash, out passwordSalt);
+				var user = _mapper.Map<User>(request);
+				user.PasswordSalt = passwordSalt;
+				user.PasswordHash = passwordHash;
+				await _userService.AddAsync(user);
+				var token = await _authService.CreateAccessTokenAsync(user);
+				return new()
+				{
+					User = user,
+					Token = token
+				};
 			}
 		}
 	}

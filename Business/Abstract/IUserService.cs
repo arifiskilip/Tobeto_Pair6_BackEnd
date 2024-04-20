@@ -1,5 +1,5 @@
-﻿using Core.Entities;
-using Microsoft.AspNetCore.Http;
+﻿using Core.DataAccess.Paging;
+using Core.Entities;
 
 namespace Business.Abstract
 {
@@ -7,10 +7,10 @@ namespace Business.Abstract
 	{
 		Task<User> AddAsync(User user);
 		Task DeleteAsync(User user);
-		Task<User> UpdateAsync(User user, IFormFile file);
-		Task<List<User>> GetAllAsync();
+		Task<User> UpdateAsync(User user);
+		Task<IPaginatedList<User>> GetAllAsync();
 		Task<User> GetByUserIdAsync(int userId);
-		List<Role> GetClaims(User user);
+		Task<List<Role>> GetClaimsAsync(User user);
 		Task<User> GetByMailAsync(string email);
 	}
 }
