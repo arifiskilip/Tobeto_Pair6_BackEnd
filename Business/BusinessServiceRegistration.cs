@@ -2,7 +2,7 @@
 using Business.Concrete;
 using Business.Features.Auth.Rules;
 using Business.Features.Products.Rules;
-using Business.Features.Products.Validations;
+using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Validation;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +29,7 @@ namespace Business
 			//MediatR
 			services.AddMediatR(config => {
 				config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+				config.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
 				config.AddOpenBehavior(typeof(ValidationBehavior<,>));
 			});
 

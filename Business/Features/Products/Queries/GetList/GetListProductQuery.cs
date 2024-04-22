@@ -1,13 +1,15 @@
 ﻿using Business.Abstract;
+using Core.Application.Pipelines.Authorization;
 using MediatR;
 
 namespace Business.Features.Products.Queries.GetList
 {
-	public class GetListProductQuery :IRequest<GetListProductResponse>
+	public class GetListProductQuery :IRequest<GetListProductResponse>, ISecuredRequest
 	{
         public int PageIndex { get; set; }
         public int PageSize { get; set; }
 
+		public string[] RequiredRoles => ["Admin,Member"];
 
 		public class GetListProductQueryHandler : IRequestHandler<GetListProductQuery, GetListProductResponse>
 		{

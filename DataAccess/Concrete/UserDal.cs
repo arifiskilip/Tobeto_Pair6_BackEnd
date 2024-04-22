@@ -34,7 +34,7 @@ namespace DataAccess.Concrete
 							 on role.Id equals userRole.RoleId
 						 where userRole.UserId == user.Id
 						 select new Role { Id = role.Id, Name = role.Name };
-			return result.ToList();
+			return await result.ToListAsync();
 		}
 	}
 }

@@ -4,7 +4,6 @@ using Core.CrossCuttingConcers.Exceptions.Extensions;
 using Core.Utilities.Security.JWT;
 using DataAccess;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 

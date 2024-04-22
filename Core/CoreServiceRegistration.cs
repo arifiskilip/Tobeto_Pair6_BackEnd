@@ -9,6 +9,7 @@ namespace Core
 		{
 
 			services.AddScoped<ITokenHelper, JwtHelper>();
+			services.AddHttpContextAccessor();
 
 			return services;
 		}

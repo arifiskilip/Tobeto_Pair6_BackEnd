@@ -50,7 +50,7 @@ namespace Business.Concrete
 			{
 				return checkUser;
 			}
-			throw new NotFoundException("Kullanıcı bulunamadı.");
+			throw new AuthorizationException("Kullanıcı adı veya şifre hatalı.");
 		}
 
 		public async Task<User> GetByUserIdAsync(int userId)
